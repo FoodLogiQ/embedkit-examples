@@ -1,0 +1,22 @@
+{
+  "name": "embedkit-examples-commonjs",
+  "license": "BSD-2-Clause",
+  "author": "Boomi, LP",
+  "description": "An example common-js app using the EmbedKit.",
+  "version": "1.0.5",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "dotenv": "^17.2.1",
+    "vite": "^7.1.2"
+  },
+  "dependencies": {
+    "@boomi/embedkit": "^1.3.11",
+    "i": "^0.3.7",
+    "npm": "^11.5.2"
+  }
+}

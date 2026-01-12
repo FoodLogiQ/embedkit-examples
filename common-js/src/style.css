@@ -1,0 +1,821 @@
+/* ==========================================================================
+   OEM+ Web App — Global Styles
+   Organized, minimal, and consistent CSS
+   ========================================================================== */
+
+/* 0) CSS Reset / Primitives ------------------------------------------------ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+/* 
+  Design token bridge:
+  This stylesheet maps its base CSS variables to the values coming from
+  boomi.config.js → cssVarsByTheme.oem (the "--boomi-*" tokens).
+  If you swap themes or override tokens in config, the whole UI updates.
+*/
+:root {
+  --topbar-height: 60px;
+  /* Colors (mapped to Boomi theme tokens) */
+  --bg: var(--boomi-root-bg-color, #0b1220);
+  --surface: var(--boomi-card-bg, #0f172a);
+  --text: var(--boomi-root-fg-color, #e5e7eb);
+  --muted: var(--boomi-form-helper-fg, #9aa4b2);
+  --border: var(--boomi-card-border, #1f2937);
+
+  /* Brand */
+  --primary: var(--boomi-btn-primary-bg, #2563eb);
+  --primary-600: var(--boomi-btn-primary-bg-hover, #1d4ed8);
+
+  /* Sidebar */
+  --sidebar-bg: var(--boomi-page-bg-color, #0b1220);
+  --sidebar-fg: var(--boomi-root-fg-color, #e5e7eb);
+  --sidebar-active: rgba(255, 255, 255, 0.06);
+
+  /* Effects */
+  --shadow: var(--boomi-card-shadow, 0 12px 30px rgba(0, 0, 0, 0.35));
+
+  /* Radii */
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 10px;
+
+  /* Header bridge */
+  --header-bg: var(--boomi-header-bg-color, rgba(15, 23, 42, 0.8));
+  --header-fg: var(--boomi-header-fg-color, #e5e7eb);
+  --header-border: var(--boomi-header-border-color, #1f2937);
+  --header-shadow: var(--boomi-header-shadow, 0 12px 30px rgba(0,0,0,0.35));
+
+  /* Inputs bridge */
+  --input-bg: var(--boomi-input-bg, #0b1220);
+  --input-fg: var(--boomi-input-fg, #e5e7eb);
+  --input-border: var(--boomi-input-border, #1f2937);
+  --input-ph: var(--boomi-input-placeholder, #9aa4b2);
+  --input-shadow-focus: var(--boomi-input-shadow-focus, 0 0 0 4px rgba(37,99,235,0.12));
+  --input-border-focus: var(--boomi-input-border-focus, #2563eb);
+
+  /* Card bridge */
+  --card-border: var(--boomi-card-border, #1f2937);
+  --card-bg: var(--boomi-card-bg, #0f172a);
+  --card-shadow: var(--boomi-card-shadow, 0 12px 30px rgba(0,0,0,0.35));
+  --card-hover-shadow: var(--boomi-card-hover-shadow, 0 18px 40px rgba(0,0,0,0.45));
+  --card-hover-scale: var(--boomi-card-hover-scale, scale(1.02));
+
+  /* Table bridge */
+  --table-header-bg: var(--boomi-table-header-bg, #0f172a);
+  --table-header-fg: var(--boomi-table-header-fg, #e5e7eb);
+  --table-header-border: var(--boomi-table-header-border, #1f2937);
+  --table-row-odd-bg: var(--boomi-table-row-odd-bg, #0b1220);
+  --table-row-even-bg: var(--boomi-table-row-even-bg, #0f172a);
+  --table-row-hover-shadow: var(--boomi-table-row-hover-shadow, 0 8px 20px rgba(0,0,0,0.25));
+
+  /* Scrollbars */
+  --boomi-scrollbar-width: 10px;
+  --boomi-scrollbar-radius: 999px;
+  --boomi-scrollbar-bg: color-mix(in srgb, var(--border) 35%, transparent);
+  --boomi-scrollbar-thumb: color-mix(in srgb, var(--text) 18%, transparent);
+  --boomi-scrollbar-thumb-hover: color-mix(in srgb, var(--primary) 28%, transparent);
+  --boomi-scrollbar-thumb-active: color-mix(in srgb, var(--primary) 40%, transparent);
+  --boomi-scrollbar-corner: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark scheme maps to the same Boomi tokens (already dark-aligned) */
+    --bg: var(--boomi-root-bg-color, #0b1220);
+    --surface: var(--boomi-card-bg, #0f172a);
+    --text: var(--boomi-root-fg-color, #e5e7eb);
+    --muted: var(--boomi-form-helper-fg, #9aa4b2);
+    --border: var(--boomi-card-border, #1f2937);
+
+    --sidebar-bg: var(--boomi-page-bg-color, #0b1220);
+    --sidebar-fg: var(--boomi-root-fg-color, #e5e7eb);
+    --sidebar-active: rgba(255, 255, 255, 0.06);
+
+    --shadow: var(--boomi-card-shadow, 0 12px 30px rgba(0, 0, 0, 0.35));
+
+    --boomi-scrollbar-bg: color-mix(in srgb, var(--border) 45%, transparent);
+    --boomi-scrollbar-thumb: color-mix(in srgb, var(--text) 26%, transparent);
+    --boomi-scrollbar-thumb-hover: color-mix(in srgb, var(--primary) 36%, transparent);
+    --boomi-scrollbar-thumb-active: color-mix(in srgb, var(--primary) 48%, transparent);
+  }
+}
+
+/* 1) Base Elements --------------------------------------------------------- */
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: var(--default-font-family, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    Inter, 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol');
+  background: radial-gradient(
+      1200px 800px at 20% -20%,
+      rgba(37, 99, 235, 0.08),
+      transparent 60%
+    ),
+    radial-gradient(
+      1000px 700px at 120% 0%,
+      rgba(139, 92, 246, 0.06),
+      transparent 50%
+    ),
+    var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  color: inherit;
+  font: inherit;
+}
+
+.boomi-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--boomi-scrollbar-thumb) var(--boomi-scrollbar-bg);
+}
+.boomi-scroll::-webkit-scrollbar {
+  width: var(--boomi-scrollbar-width);
+  height: var(--boomi-scrollbar-width);
+}
+.boomi-scroll::-webkit-scrollbar-track {
+  background: var(--boomi-scrollbar-bg);
+  border-radius: var(--boomi-scrollbar-radius);
+}
+.boomi-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--boomi-scrollbar-thumb);
+  border-radius: var(--boomi-scrollbar-radius);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.boomi-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: var(--boomi-scrollbar-thumb-hover);
+}
+.boomi-scroll::-webkit-scrollbar-thumb:active {
+  background-color: var(--boomi-scrollbar-thumb-active);
+}
+.boomi-scroll::-webkit-scrollbar-corner {
+  background: var(--boomi-scrollbar-corner);
+}
+
+/* 2) Utilities -------------------------------------------------------------- */
+.hidden {
+  display: none !important;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+.row.gap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* 3) Icons (Material Symbols) ---------------------------------------------- */
+/* Requires <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet" /> in index.html */
+.msr {
+  display: inline-flex;
+  line-height: 1;
+  vertical-align: middle;
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 20px; /* size control */
+  font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+}
+.nav-item .msr {
+  margin-right: 8px;
+}
+.icon-btn .msr {
+  font-size: 20px;
+}
+.btn .msr {
+  margin-right: 8px;
+}
+.badge .msr {
+  margin-right: 6px;
+  font-size: 16px;
+}
+
+/* 4) Forms ------------------------------------------------------------------ */
+.form-group {
+  margin-bottom: 14px;
+}
+label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--boomi-form-label-fg, var(--muted));
+  font-size: 0.9rem;
+}
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  color: var(--input-fg);
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.input::placeholder {
+  color: var(--input-ph);
+}
+.input:focus {
+  border-color: var(--input-border-focus);
+  box-shadow: var(--input-shadow-focus);
+}
+.helper {
+  margin-top: 4px;
+  color: var(--boomi-form-helper-fg, var(--muted));
+  font-size: 0.85rem;
+}
+.error {
+  margin-top: 6px;
+  color: var(--boomi-form-error-fg, #f87171);
+  font-size: 0.85rem;
+}
+
+/* 5) Buttons ---------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.06s ease, box-shadow 0.2s ease, background 0.2s ease,
+    border-color 0.2s ease;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn-primary {
+  color: var(--boomi-btn-primary-fg, #fff);
+  background: var(--boomi-btn-primary-bg, var(--primary));
+  box-shadow: var(--boomi-btn-primary-shadow, 0 10px 18px rgba(37, 99, 235, 0.25));
+  border-color: var(--boomi-btn-primary-border, transparent);
+}
+.btn-primary:hover {
+  background: var(--boomi-btn-primary-bg-hover, var(--primary-600));
+}
+.btn-ghost {
+  color: var(--muted);
+  background: transparent;
+  border-color: var(--border);
+}
+.btn-ghost:hover {
+  color: var(--text);
+  border-color: var(--text);
+}
+.btn-block {
+  width: 100%;
+}
+
+/* 6) Auth Views (Login) ----------------------------------------------------- */
+.auth-wrap {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 24px;
+  background-image: var(--boomi-auth-bg-image, none);
+  background-color: var(--boomi-root-bg-color, var(--bg));
+  background-repeat: no-repeat, repeat, repeat;
+}
+.auth-card {
+  width: 100%;
+  max-width: 380px;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+.auth-card--elevated {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.06),
+        rgba(255, 255, 255, 0.05)
+      )
+      padding-box,
+    linear-gradient(120deg, rgba(37, 99, 235, 0.35), rgba(139, 92, 246, 0.35))
+      border-box;
+  border: 1px solid transparent;
+  backdrop-filter: blur(8px);
+}
+@media (prefers-color-scheme: dark) {
+  .auth-card--elevated {
+    background: linear-gradient(
+          180deg,
+          rgba(15, 23, 42, 0.7),
+          rgba(15, 23, 42, 0.6)
+        )
+        padding-box,
+      linear-gradient(120deg, rgba(37, 99, 235, 0.35), rgba(139, 92, 246, 0.35))
+        border-box;
+  }
+}
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.brand-logo {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  border-radius: 14px;
+  box-shadow: var(--boomi-btn-primary-shadow, 0 10px 24px rgba(37, 99, 235, 0.25));
+  background: radial-gradient(
+      60% 60% at 30% 20%,
+      rgba(255, 255, 255, 0.25),
+      transparent 60%
+    ),
+    linear-gradient(135deg, #2563eb, #8b5cf6);
+}
+.brand-logo-text {
+  font-size: 0.9rem;
+}
+.brand-logo-text .plus {
+  margin-left: 1px;
+  font-weight: 900;
+}
+.auth-title {
+  margin: 0 0 2px 0;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+}
+.auth-subtitle {
+  margin: 0 0 16px 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+.auth-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-top: 16px;
+}
+.auth-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+}
+.remember input {
+  accent-color: var(--primary);
+}
+.link {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  opacity: 0.9;
+}
+.link:hover {
+  opacity: 1;
+}
+.auth-footer {
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.auth-footer a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Brand gradient text */
+.oem {
+  font-size: 3rem;
+  background: linear-gradient(90deg, #2563eb, #8b5cf6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.oem .plus {
+  color: inherit;
+}
+
+/* 7) App Shell -------------------------------------------------------------- */
+.app-shell {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 16px;
+  color: var(--sidebar-fg);
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+}
+.brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  font-weight: 700;
+  font-size: 3rem;
+  letter-spacing: 0.02em;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent);
+}
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  color: var(--sidebar-fg);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.06s ease;
+}
+.nav-item:hover {
+  background: var(--sidebar-active);
+}
+.nav-item:active {
+  transform: translateY(1px);
+}
+.nav-item.active {
+  background: var(--sidebar-active);
+}
+.sidebar-footer {
+  margin-top: auto;
+}
+
+/* Main Area */
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--boomi-page-bg-image, none), var(--bg);
+  background-repeat: no-repeat, repeat, repeat;
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: var(--topbar-height);
+  padding: 0 16px;
+  color: var(--header-fg);
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--header-border);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--header-shadow);
+}
+.icon-btn {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.icon-btn:hover {
+  border-color: var(--text);
+}
+.topbar-title {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.content {
+  padding: 20px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+.content--integrations {
+  padding: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: calc(100vh - var(--topbar-height));
+  overflow: hidden;
+}
+.content--integrations #boomi-integrations {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+}
+.content--integrations #boomi-integrations > * {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+}
+
+/* 8) Cards & Grid ----------------------------------------------------------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  padding: 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--card-shadow);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+  transform: var(--card-hover-scale);
+  box-shadow: var(--card-hover-shadow);
+}
+.card h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.05rem;
+}
+.card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+.card--full {
+  grid-column: 1 / -1;
+}
+.no-raise,
+.no-raise:hover {
+  transform: none !important;
+  box-shadow: var(--card-shadow) !important;
+}
+
+/* 9) KPIs, Charts, Tables --------------------------------------------------- */
+.kpi-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+@media (min-width: 961px) {
+  .sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: auto;
+  }
+}
+@media (max-width: 920px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 520px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.kpi {
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+}
+.kpi-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.kpi-label {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.kpi-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  font-size: 0.78rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.02);
+}
+.badge.positive {
+  color: #14532d;
+  background: #dcfce7;
+  border-color: #bbf7d0;
+}
+.badge.neutral {
+  color: #334155;
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+}
+.badge.info {
+  color: #1e3a8a;
+  background: #dbeafe;
+  border-color: #bfdbfe;
+}
+
+/* Charts */
+.chart {
+  position: relative;
+}
+.chart h3 {
+  margin: 0 0 8px 0;
+}
+.chart-canvas {
+  display: block;
+  width: 100%;
+  height: 180px;
+}
+.chart-canvas.tall {
+  height: 220px;
+}
+.chart-canvas.donut {
+  height: 220px;
+}
+
+/* Legends */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+/* Tables */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid var(--table-header-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.table thead th {
+  background: var(--table-header-bg);
+  color: var(--table-header-fg);
+  border-bottom: 1px solid var(--table-header-border);
+}
+.table th,
+.table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.table th.num,
+.table td.num {
+  text-align: right;
+}
+.table tbody tr:nth-child(odd) {
+  background: var(--table-row-odd-bg);
+}
+.table tbody tr:nth-child(even) {
+  background: var(--table-row-even-bg);
+}
+.table tbody tr:hover {
+  box-shadow: var(--table-row-hover-shadow);
+}
+
+/* Sparklines */
+.spark {
+  display: block;
+  width: 120px;
+  height: 32px;
+}
+
+/* 10) Toggles (Switch) ------------------------------------------------------ */
+.pref {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+.switch input {
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+.slider {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  background: #cbd5e1;
+  border-radius: 999px;
+  transition: 0.2s;
+}
+.slider::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+.switch input:checked + .slider {
+  background: var(--primary);
+}
+.switch input:checked + .slider::before {
+  transform: translateX(20px);
+}
+
+/* 11) Responsive Sidebar (Mobile) ------------------------------------------ */
+@media (max-width: 960px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: 78%;
+    max-width: 280px;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    z-index: 50;
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.4);
+    z-index: 40;
+  }
+}
+
+/* 12) Boomi Dashboard Host Fixes ------------------------------------------- */
+#boomi-dashboard {
+  position: relative;
+  z-index: 9998;
+  isolation: isolate;
+  overflow: visible;
+  --boomi-root-transform: none;
+}
