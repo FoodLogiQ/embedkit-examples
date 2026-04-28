@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salesforce</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="http://localhost:8085/embedkit-cdn.css" />
+<script>
+  window.BoomiEmbed = {
+    publicToken: "pk_77163bcf-1e05-4a3b-83a8-12cef76a8b7c",
+    agentId: "project_ddff2928-e72c-412b-942b-c0a760b71f0c",
+    mountId: "boomi-agent",
+    serverBase: "http://localhost:8081/api/v1"
+  };
+</script>
+<script src="http://localhost:8085/embedkit-cdn.umd.cjs" async></script>
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f3f2f2;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Top Navigation */
+.top-nav {
+    background: #032d60;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.menu-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.menu-btn:hover {
+    background: rgba(255,255,255,0.12);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo-text {
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.2px;
+}
+
+.nav-divider {
+    width: 1px;
+    height: 22px;
+    background: rgba(255,255,255,0.25);
+    margin: 0 4px;
+}
+
+.app-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+}
+
+.nav-center {
+    flex: 1;
+    max-width: 520px;
+    margin: 0 32px;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 4px;
+    padding: 6px 12px;
+    gap: 8px;
+}
+
+.search-icon {
+    color: #706e6b;
+    flex-shrink: 0;
+}
+
+.search-bar input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 13px;
+    color: #181818;
+    font-family: inherit;
+}
+
+.search-bar input::placeholder {
+    color: #706e6b;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.org-name {
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+    font-weight: 500;
+    margin-right: 6px;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.icon-btn:hover {
+    background: rgba(255,255,255,0.12);
+}
+
+.user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #0176d3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    border: 2px solid rgba(255,255,255,0.4);
+    cursor: pointer;
+    margin-left: 4px;
+}
+
+/* Tab Bar */
+.tab-bar {
+    background: white;
+    height: 40px;
+    display: flex;
+    align-items: stretch;
+    padding: 0 72px;
+    border-bottom: 1px solid #dddbda;
+    position: fixed;
+    top: 52px;
+    left: 0;
+    right: 0;
+    z-index: 90;
+}
+
+.tab-item {
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #444;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.tab-item:hover {
+    color: #0176d3;
+    border-bottom-color: #d8edff;
+}
+
+.tab-item.active {
+    color: #0176d3;
+    border-bottom-color: #0176d3;
+    font-weight: 600;
+}
+
+.tab-more {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    cursor: pointer;
+    color: #706e6b;
+}
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 92px;
+    bottom: 0;
+    width: 56px;
+    background: white;
+    border-right: 1px solid #dddbda;
+    z-index: 50;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0;
+    gap: 2px;
+}
+
+.sidebar-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 12px;
+    color: #706e6b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: color 0.15s;
+}
+
+.sidebar-btn:hover {
+    background: #f3f2f2;
+    color: #0176d3;
+}
+
+.sidebar-btn.active {
+    color: #0176d3;
+}
+
+.sidebar-btn.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 3px;
+    background: #0176d3;
+    border-radius: 0 2px 2px 0;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 56px;
+    margin-top: 92px;
+    padding: 24px 24px 0;
+    height: calc(100vh - 92px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.content-wrapper {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.main-heading {
+    font-size: 30px;
+    font-weight: 700;
+    color: #032d60;
+    margin-bottom: 6px;
+    text-align: center;
+}
+
+.main-subheading {
+    font-size: 14px;
+    color: #706e6b;
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+/* AI Input Container */
+.ai-input-container {
+    max-width: 680px;
+    margin: 0 auto 20px;
+}
+
+.ai-input-box {
+    background: white;
+    border-radius: 8px;
+    padding: 16px 18px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    border: 1px solid #dddbda;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.ai-input-box:focus-within {
+    border-color: #0176d3;
+    box-shadow: 0 0 0 3px rgba(1,118,211,0.15);
+}
+
+.ai-input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: #181818;
+    margin-bottom: 12px;
+    font-family: inherit;
+}
+
+.ai-input::placeholder {
+    color: #aeaeae;
+}
+
+.input-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-chip {
+    background: white;
+    border: 1px solid #dddbda;
+    border-radius: 4px;
+    padding: 5px 12px;
+    font-size: 12px;
+    color: #0176d3;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+    font-weight: 600;
+    transition: all 0.15s;
+}
+
+.action-chip:hover {
+    background: #f3f2f2;
+    border-color: #0176d3;
+}
+
+.action-chip svg {
+    width: 14px;
+    height: 14px;
+}
+
+.submit-btn {
+    margin-left: auto;
+    background: #0176d3;
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.submit-btn:hover {
+    background: #014486;
+}
+
+.submit-btn svg {
+    color: white;
+}
+
+.ai-disclaimer {
+    margin-top: 10px;
+    font-size: 11px;
+    color: #706e6b;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+/* Featured Section */
+.featured-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+    min-height: 0;
+}
+
+#boomi-agent {
+    flex: 1;
+    min-height: 0;
+}
+
+.featured-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.featured-header h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #032d60;
+}
+
+.view-all-btn {
+    background: white;
+    border: 1px solid #dddbda;
+    border-radius: 4px;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: #0176d3;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: inherit;
+    transition: all 0.15s;
+}
+
+.view-all-btn:hover {
+    background: #f3f2f2;
+    border-color: #0176d3;
+}
+
+/* Prompts Grid */
+.prompts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+.prompt-card {
+    background: white;
+    border: 1px solid #dddbda;
+    border-radius: 8px;
+    padding: 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.prompt-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-color: #0176d3;
+    transform: translateY(-1px);
+}
+
+.prompt-text {
+    font-size: 13px;
+    color: #3e3e3c;
+    line-height: 1.5;
+    flex: 1;
+}
+
+.prompt-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.tag {
+    background: #e8f4ff;
+    color: #014486;
+    border: 1px solid #c9e3f8;
+    border-radius: 4px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+}
+
+.tag.gray {
+    background: #f3f2f2;
+    color: #706e6b;
+    border-color: #dddbda;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .prompts-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+    .main-content { padding: 28px 16px; }
+    .prompts-grid { grid-template-columns: 1fr; }
+    .main-heading { font-size: 22px; }
+    .nav-center { margin: 0 16px; }
+    .org-name { display: none; }
+    .tab-bar { padding: 0 56px; }
+}
+
+@media (max-width: 480px) {
+    .sidebar { display: none; }
+    .main-content { margin-left: 0; }
+    .logo-text { display: none; }
+    .action-chip span { display: none; }
+    .tab-bar { display: none; }
+}
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+        <div class="nav-left">
+            <!-- App Launcher / Waffle -->
+            <button class="menu-btn" title="App Launcher">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <rect x="2" y="2" width="5" height="5" rx="1" fill="white"/>
+                    <rect x="7.5" y="2" width="5" height="5" rx="1" fill="white"/>
+                    <rect x="13" y="2" width="5" height="5" rx="1" fill="white"/>
+                    <rect x="2" y="7.5" width="5" height="5" rx="1" fill="white"/>
+                    <rect x="7.5" y="7.5" width="5" height="5" rx="1" fill="white"/>
+                    <rect x="13" y="7.5" width="5" height="5" rx="1" fill="white"/>
+                    <rect x="2" y="13" width="5" height="5" rx="1" fill="white"/>
+                    <rect x="7.5" y="13" width="5" height="5" rx="1" fill="white"/>
+                    <rect x="13" y="13" width="5" height="5" rx="1" fill="white"/>
+                </svg>
+            </button>
+            <div class="logo">
+                <!-- Salesforce cloud mark -->
+                <svg width="36" height="26" viewBox="0 0 60 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M24.8 6.4C27.0 4.0 30.1 2.5 33.5 2.5C38.3 2.5 42.4 5.2 44.6 9.2C46.5 8.3 48.7 7.8 51.0 7.8C58.7 7.8 65 14.1 65 21.8C65 29.5 58.7 35.8 51.0 35.8H12.5C6.2 35.8 1 30.6 1 24.3C1 18.7 5.1 14.0 10.4 12.9C9.8 11.5 9.5 10.0 9.5 8.4C9.5 3.2 13.7 -1 18.9 -1C20.9 -1 22.7 -0.2 24.8 1.6" fill="white"/>
+                </svg>
+                <span class="logo-text">Salesforce</span>
+            </div>
+            <div class="nav-divider"></div>
+            <span class="app-name">Sales</span>
+        </div>
+        <div class="nav-center">
+            <div class="search-bar">
+                <svg class="search-icon" width="16" height="16" viewBox="0 0 18 18" fill="none">
+                    <circle cx="7.5" cy="7.5" r="6" stroke="#706e6b" stroke-width="1.5"/>
+                    <path d="M12 12L16 16" stroke="#706e6b" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <input type="text" placeholder="Search Salesforce">
+            </div>
+        </div>
+        <div class="nav-right">
+            <span class="org-name">Acme Corp</span>
+            <button class="icon-btn" title="Help & Training">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <circle cx="9" cy="9" r="7.5" stroke="white" stroke-width="1.5"/>
+                    <path d="M6.5 6.8C6.5 5.4 7.6 4.3 9 4.3C10.4 4.3 11.5 5.4 11.5 6.8C11.5 7.8 10.9 8.7 10.0 9.1C9.4 9.3 9 9.9 9 10.5V11" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                    <circle cx="9" cy="13.5" r="0.8" fill="white"/>
+                </svg>
+            </button>
+            <button class="icon-btn" title="Setup">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <circle cx="9" cy="9" r="2.5" stroke="white" stroke-width="1.5"/>
+                    <path d="M9 1.5V3M9 15V16.5M16.5 9H15M3 9H1.5M14.6 3.4L13.5 4.5M4.5 13.5L3.4 14.6M14.6 14.6L13.5 13.5M4.5 4.5L3.4 3.4" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </button>
+            <button class="icon-btn" title="Notifications">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path d="M9 1.5C9 1.5 5.5 3.5 5.5 8.5V12L3 14.5H15L12.5 12V8.5C12.5 3.5 9 1.5 9 1.5Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M7.2 14.5C7.2 15.5 8.0 16.3 9 16.3C10.0 16.3 10.8 15.5 10.8 14.5" stroke="white" stroke-width="1.5"/>
+                </svg>
+            </button>
+            <div class="user-avatar" title="View Profile">CT</div>
+        </div>
+    </header>
+
+    <!-- Tab Bar -->
+    <nav class="tab-bar">
+        <a class="tab-item active" href="#">Home</a>
+        <a class="tab-item" href="#">Leads</a>
+        <a class="tab-item" href="#">Contacts</a>
+        <a class="tab-item" href="#">Accounts</a>
+        <a class="tab-item" href="#">Opportunities</a>
+        <a class="tab-item" href="#">Cases</a>
+        <a class="tab-item" href="#">Reports</a>
+        <a class="tab-item" href="#">Dashboards</a>
+        <span class="tab-more">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M3 5L7 9L11 5" stroke="#706e6b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </span>
+    </nav>
+
+    <!-- Left Sidebar -->
+    <aside class="sidebar">
+        <nav class="sidebar-nav">
+            <button class="sidebar-btn active" title="Home">
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                    <path d="M3 9L11 3L19 9V19H14V13H8V19H3V9Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <button class="sidebar-btn" title="Chatter">
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                    <path d="M19 3H3C2.45 3 2 3.45 2 4V15C2 15.55 2.45 16 3 16H7V20L11 16H19C19.55 16 20 15.55 20 15V4C20 3.45 19.55 3 19 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <button class="sidebar-btn" title="Tasks">
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                    <rect x="3" y="3" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M7 11L9.5 13.5L15 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <button class="sidebar-btn" title="Calendar">
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                    <rect x="2" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M2 9H20M7 2V5M15 2V5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <h1 class="main-heading">Good afternoon, Chris</h1>
+            <p class="main-subheading">Here's what's happening with your sales today.</p>
+
+            <div class="ai-input-container">
+                <div class="ai-input-box">
+                    <input type="text" class="ai-input" placeholder="Ask Einstein anything about your business...">
+                    <div class="input-actions">
+                        <button class="action-chip">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                <path d="M7 1L8.5 4.8L12.5 5.3L9.8 7.8L10.5 12L7 10L3.5 12L4.2 7.8L1.5 5.3L5.5 4.8L7 1Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+                            </svg>
+                            <span>Suggested prompts</span>
+                        </button>
+                        <button class="action-chip">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                <rect x="1" y="1" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/>
+                                <path d="M4 7H10M4 4.5H10M4 9.5H7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                            </svg>
+                            <span>Recent records</span>
+                        </button>
+                        <button class="submit-btn">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M14 8L2 2L5 8L2 14L14 8Z" fill="white"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <p class="ai-disclaimer">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M6 1L7.5 4.5L11 5L8.5 7.5L9 11L6 9.5L3 11L3.5 7.5L1 5L4.5 4.5L6 1Z" stroke="#706e6b" stroke-width="1" stroke-linejoin="round"/>
+                    </svg>
+                    Einstein AI may generate inaccurate information. Always verify important details.
+                </p>
+            </div>
+
+            <div class="featured-section">
+                <div id="boomi-agent"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

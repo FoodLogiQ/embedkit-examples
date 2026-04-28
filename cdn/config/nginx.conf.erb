@@ -1,0 +1,28 @@
+daemon off;
+worker_processes 1;
+pid /tmp/nginx.pid;
+error_log /dev/stderr info;
+
+events {
+  worker_connections 1024;
+}
+
+http {
+  include       /app/config/mime.types;
+  default_type  application/octet-stream;
+  access_log /dev/stdout;
+
+  sendfile        on;
+  keepalive_timeout  65;
+  gzip on;
+
+  server {
+    listen <%= ENV["PORT"] %>;
+    root /app;
+    index index.html;
+
+    location / {
+      try_files $uri $uri/ /index.html;
+    }
+  }
+}
