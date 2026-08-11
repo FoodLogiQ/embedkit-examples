@@ -70,3 +70,4 @@ jobs:
           aws apprunner update-service \
             --service-arn "${APP_RUNNER_SERVICE_ARN}" \
             --source-configuration "file:///tmp/source-update.json"
+            
