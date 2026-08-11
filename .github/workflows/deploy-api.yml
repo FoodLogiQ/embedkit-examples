@@ -1,0 +1,72 @@
+name: Deploy API (ECR → App Runner)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "server/**"
+      - ".github/workflows/deploy-api.yml"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: boomi/dev/api
+  # Repo variable after Terraform: terraform output -raw github_deploy_role_arn
+  AWS_ROLE_ARN: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+  # Repo variable after App Runner exists: terraform output -raw apprunner_service_arn
+  APP_RUNNER_SERVICE_ARN: ${{ vars.APP_RUNNER_SERVICE_ARN }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push image
+        id: build
+        working-directory: server
+        env:
+          ECR_REGISTRY: ${{ steps.ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          IMAGE_URI="${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
+          docker build -t "${IMAGE_URI}" .
+          docker push "${IMAGE_URI}"
+          echo "image_uri=${IMAGE_URI}" >> "$GITHUB_OUTPUT"
+
+      - name: Update App Runner image (preserve env/secrets)
+        if: ${{ env.APP_RUNNER_SERVICE_ARN != '' }}
+        env:
+          IMAGE_URI: ${{ steps.build.outputs.image_uri }}
+        run: |
+          set -euo pipefail
+          aws apprunner describe-service \
+            --service-arn "${APP_RUNNER_SERVICE_ARN}" \
+            --query 'Service.SourceConfiguration' \
+            --output json > /tmp/source.json
+
+          # Replace only ImageIdentifier; keep Auth, Port, env vars, and secret ARNs.
+          jq --arg img "${IMAGE_URI}" '
+            .ImageRepository.ImageIdentifier = $img
+            | del(.AuthenticationConfiguration.ConnectionArn)
+          ' /tmp/source.json > /tmp/source-update.json
+
+          aws apprunner update-service \
+            --service-arn "${APP_RUNNER_SERVICE_ARN}" \
+            --source-configuration "file:///tmp/source-update.json"
