@@ -39,6 +39,13 @@ export const INTEGRATIONS: Integration[] = [
     badge: "Data",
   },
   {
+    id: "slack_integration",
+    name: "Slack",
+    category: "Communication",
+    iconUrl: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Slack_icon_2019.svg",
+    badge: "Messaging",
+  },
+  {
     id: "calendly",
     name: "Calendly",
     category: "Collaboration",
