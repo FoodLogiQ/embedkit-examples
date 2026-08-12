@@ -6,30 +6,130 @@ interface DetailProps {
   onBack: () => void;
 }
 
-interface ConnectionForm {
-  API_URL: string;
-  API_ACCOUNT_ID: string;
-  API_USERNAME: string;
-  API_TOKEN: string;
-}
+// ==========================================
+// 1. COMPONENT: SLACK (STACK) DETAILS FORM
+// ==========================================
+const SlackDetails = ({ formData, handleChange }: { formData: any; handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => (
+  <>
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Client ID</label>
+      <input
+        type="text"
+        name="CLIENT_ID"
+        value={formData.CLIENT_ID || ""}
+        onChange={handleChange}
+        placeholder="123456789012.123456789012"
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+        required
+      />
+    </div>
 
-const DUMMY_DEFAULT_DATA: ConnectionForm = {
-  API_URL: "https://api.boomi.com/partner/api/rest/v1",
-  API_ACCOUNT_ID: "esharesearchllcdbatrustwe-XXXXXX",
-  API_USERNAME: "BOOMI_TOKEN.user@trustwell.com",
-  API_TOKEN: "dummy-token-12345678-abcd-efgh",
-};
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Client Secret</label>
+      <input
+        type="password"
+        name="CLIENT_SECRET"
+        value={formData.CLIENT_SECRET || ""}
+        onChange={handleChange}
+        placeholder="••••••••••••••••••••••••••••"
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] font-mono leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+        required
+      />
+    </div>
 
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Access Token</label>
+      <input
+        type="password"
+        name="ACCESS_TOKEN"
+        value={formData.ACCESS_TOKEN || ""}
+        onChange={handleChange}
+        placeholder="xoxb-your-bot-access-token"
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] font-mono leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+        required
+      />
+    </div>
+
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Channel Name</label>
+      <input
+        type="text"
+        name="CHANNEL_NAME"
+        value={formData.CHANNEL_NAME || ""}
+        onChange={handleChange}
+        placeholder="#general"
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+        required
+      />
+    </div>
+  </>
+);
+
+// ==========================================
+// 2. COMPONENT: DEFAULT (ORACLE/BOOMI) DETAILS FORM
+// ==========================================
+const DefaultDetails = ({ formData, handleChange }: { formData: any; handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => (
+  <>
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">API_URL</label>
+      <input
+        type="text"
+        name="API_URL"
+        value={formData.API_URL || ""}
+        onChange={handleChange}
+        placeholder="https://api.boomi.com/partner/api/rest/v1"
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+        required
+      />
+    </div>
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">API_ACCOUNT_ID</label>
+      <input
+        type="text"
+        name="API_ACCOUNT_ID"
+        value={formData.API_ACCOUNT_ID || ""}
+        onChange={handleChange}
+        placeholder="esharesearchllcdbatrustwe-XXXXXX"
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+        required
+      />
+    </div>
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">API_USERNAME</label>
+      <input
+        type="text"
+        name="API_USERNAME"
+        value={formData.API_USERNAME || ""}
+        onChange={handleChange}
+        placeholder="BOOMI_TOKEN.user@trustwell.com"
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+        required
+      />
+    </div>
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">API_TOKEN</label>
+      <input
+        type="password"
+        name="API_TOKEN"
+        value={formData.API_TOKEN || ""}
+        onChange={handleChange}
+        placeholder="••••••••••••••••••••••••••••"
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] font-mono leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+        required
+      />
+    </div>
+  </>
+);
+
+// ==========================================
+// 3. MAIN WRAPPER COMPONENT
+// ==========================================
 export const Detail: React.FC<DetailProps> = ({ integration, onBack }) => {
-  const [formData, setFormData] = useState<ConnectionForm>({
-    API_URL: "",
-    API_ACCOUNT_ID: "",
-    API_USERNAME: "",
-    API_TOKEN: "",
-  });
-
+  const [formData, setFormData] = useState<any>({});
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
+
+  const isSlack = integration.id === "slack_integration" || integration.id === "stack_integration";
 
   useEffect(() => {
     const fetchFromDummyDB = () => {
@@ -41,18 +141,32 @@ export const Detail: React.FC<DetailProps> = ({ integration, onBack }) => {
         if (savedData) {
           setFormData(JSON.parse(savedData));
         } else {
-          setFormData(DUMMY_DEFAULT_DATA);
+          if (isSlack) {
+            setFormData({
+              CLIENT_ID: "",
+              CLIENT_SECRET: "",
+              ACCESS_TOKEN: "",
+              CHANNEL_NAME: "",
+            });
+          } else {
+            setFormData({
+              API_URL: "https://api.boomi.com/partner/api/rest/v1",
+              API_ACCOUNT_ID: "esharesearchllcdbatrustwe-XXXXXX",
+              API_USERNAME: "BOOMI_TOKEN.user@trustwell.com",
+              API_TOKEN: "dummy-token-12345678-abcd-efgh",
+            });
+          }
         }
         setIsLoading(false);
       }, 400);
     };
 
     fetchFromDummyDB();
-  }, [integration.id]);
+  }, [integration.id, isSlack]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setFormData((prev: any) => ({
       ...prev,
       [name]: value,
     }));
@@ -67,7 +181,6 @@ export const Detail: React.FC<DetailProps> = ({ integration, onBack }) => {
       const storageKey = `db_config_${integration.id}`;
       localStorage.setItem(storageKey, JSON.stringify(formData));
       setSaveStatus("saved!");
-
       setTimeout(() => setSaveStatus(null), 3000);
     }, 600);
   };
@@ -94,7 +207,9 @@ export const Detail: React.FC<DetailProps> = ({ integration, onBack }) => {
                 {integration.name} Configuration
               </h1>
               <p className="text-sm text-gray-600">
-                Configure connection credentials for database integration
+                {isSlack 
+                  ? "Configure Client credentials and channel settings for your integration." 
+                  : "Configure connection credentials for database integration."}
               </p>
             </div>
           </div>
@@ -105,71 +220,12 @@ export const Detail: React.FC<DetailProps> = ({ integration, onBack }) => {
             </div>
           ) : (
             <form onSubmit={handleSave} className="space-y-6">
-              {/* Field 1: API_URL */}
-              <div className="flex flex-col">
-                <label className="block text-[14px] font-semibold text-black mb-1">
-                  API_URL
-                </label>
-                <input
-                  type="text"
-                  name="API_URL"
-                  value={formData.API_URL}
-                  onChange={handleChange}
-                  placeholder="https://api.boomi.com/partner/api/rest/v1"
-                  className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
-                  required
-                />
-              </div>
+              {isSlack ? (
+                <SlackDetails formData={formData} handleChange={handleChange} />
+              ) : (
+                <DefaultDetails formData={formData} handleChange={handleChange} />
+              )}
 
-              {/* Field 2: API_ACCOUNT_ID */}
-              <div className="flex flex-col">
-                <label className="block text-[14px] font-semibold text-black mb-1">
-                  API_ACCOUNT_ID
-                </label>
-                <input
-                  type="text"
-                  name="API_ACCOUNT_ID"
-                  value={formData.API_ACCOUNT_ID}
-                  onChange={handleChange}
-                  placeholder="esharesearchllcdbatrustwe-XXXXXX"
-                  className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
-                  required
-                />
-              </div>
-
-              {/* Field 3: API_USERNAME */}
-              <div className="flex flex-col">
-                <label className="block text-[14px] font-semibold text-black mb-1">
-                  API_USERNAME
-                </label>
-                <input
-                  type="text"
-                  name="API_USERNAME"
-                  value={formData.API_USERNAME}
-                  onChange={handleChange}
-                  placeholder="BOOMI_TOKEN.user@trustwell.com"
-                  className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
-                  required
-                />
-              </div>
-
-              {/* Field 4: API_TOKEN */}
-              <div className="flex flex-col">
-                <label className="block text-[14px] font-semibold text-black mb-1">
-                  API_TOKEN
-                </label>
-                <input
-                  type="password"
-                  name="API_TOKEN"
-                  value={formData.API_TOKEN}
-                  onChange={handleChange}
-                  placeholder="••••••••••••••••••••••••••••"
-                  className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] font-mono leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
-                  required
-                />
-              </div>
-
-              {/* Action Buttons */}
               <div className="pt-6 flex items-center justify-end space-x-4 border-t border-gray-200 mt-2">
                 {saveStatus === "saved!" && (
                   <span className="text-sm font-medium text-green-700 bg-green-100 px-3 py-1 rounded-full">
