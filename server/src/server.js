@@ -150,7 +150,7 @@ app.post('/api/session', async (req, res) => {
   try {
     const origin = req.headers.origin || '';
     console.log('Request Session Origin:', origin, API_ACCOUNT_ID);
-    const r = await fetch(`${EMBEDKIT_SERVER_BASE}/auth/login`, {
+    const r = await fetch(`${EMBEDKIT_SERVER_BASE}/auth/admin/login`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -209,7 +209,7 @@ app.post('/api/session/nonce', requireAuth, async (req, res) => {
   try {
     const origin = req.headers.origin || '';
     console.log('Request Nonce Origin:', origin);
-    const r = await fetch(`${EMBEDKIT_SERVER_BASE}/auth/login`, {
+    const r = await fetch(`${EMBEDKIT_SERVER_BASE}/auth/admin/login`, {
       method: 'POST',
       credentials: 'include', 
       headers: {
