@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+}
+
+model Customer {
+  id               String   @id @default(uuid()) @db.UniqueIdentifier
+  genesisId        String   @unique @db.VarChar(100)
+  genesisAuthToken String   @db.VarChar(255)
+  customerName     String?  @db.NVarChar(255)
+  createdAt        DateTime @default(now())
+
+  integrations     CustomerIntegration[]
+  credentials      ConnectionCredential[]
+}
+
+model IntegrationsCatalog {
+  id             String  @id @db.VarChar(50) 
+  name           String  @db.NVarChar(100)
+  category       String  @db.NVarChar(50)
+  iconUrl        String? @db.VarChar(500)
+  badge          String? @db.NVarChar(50)
+  isGlobalActive Boolean @default(true)
+
+  customers      CustomerIntegration[]
+  credentials    ConnectionCredential[]
+}
+
+model CustomerIntegration {
+  customerId    String @db.UniqueIdentifier
+  integrationId String @db.VarChar(50)
+  isEnabled     Boolean @default(false)
+  isConfigured  Boolean @default(false)
+
+  customer      Customer            @relation(fields: [customerId], references: [id])
+  integration   IntegrationsCatalog @relation(fields: [integrationId], references: [id])
+
+  @@id([customerId, integrationId]) // Composite Primary Key
+}
+
+model ConnectionCredential {
+  id            String   @id @default(uuid()) @db.UniqueIdentifier
+  customerId    String   @db.UniqueIdentifier
+  integrationId String   @db.VarChar(50)
+  configPayload String   @db.NVarChar(Max)
+  updatedAt     DateTime @updatedAt
+
+  customer      Customer            @relation(fields: [customerId], references: [id])
+  integration   IntegrationsCatalog @relation(fields: [integrationId], references: [id])
+}

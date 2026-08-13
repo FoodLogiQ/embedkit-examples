@@ -1,8 +1,3 @@
-/**
- * Simple Express-based API server for EmbedKit demo
- * - single-tenant (config via env)
- * - no DB (hardcoded user)
- */
 import 'dotenv/config';
 import express from 'express';
 import helmet from 'helmet';
@@ -11,7 +6,9 @@ import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 import fetch from 'node-fetch';
-
+import 'dotenv/config';
+import { PrismaMssql } from "@prisma/adapter-mssql";
+import { PrismaClient } from '@prisma/client';
 /* ------------ env ------------ */
 const {
   PORT = 8080,
@@ -29,9 +26,7 @@ const {
 } = process.env;
 
 /* ------------ due to no db ------------ */
-let iEmail;
-
-
+let iEmail
 /* ------------ app ------------ */
 const app = express();
 app.set('trust proxy', 1);
@@ -48,6 +43,19 @@ const ALLOW_ORIGINS = new Set(
     .map(s => s.trim())
     .filter(Boolean)
 );
+
+const adapter = new PrismaMssql({
+  server: "localhost",
+  port: 1433,
+  database: "mydb",
+  user: "sa",
+  password: "M@qwery123!",
+  options: {
+    encrypt: true,
+    trustServerCertificate: true,
+  },
+});
+const prisma = new PrismaClient({ adapter });
 
 app.use((req, res, next) => {
   const origin = req.headers.origin;
@@ -226,6 +234,106 @@ app.post('/api/session/nonce', requireAuth, async (req, res) => {
     return res.json({ serverBase: EMBEDKIT_SERVER_BASE, nonce, ttlSec, tenantId: API_ACCOUNT_ID  });
   } catch {
     return res.status(502).json({ error: 'embedkit_server_unreachable' });
+  }
+});
+
+/* For generics */
+/* =========================================
+   TASK 3: Middleware authenticate Genesis Token
+========================================= */
+const genesisAuth = async (req, res, next) => {
+  const customerId = req.headers['x-genesis-customer-id'] || req.query.genesisId;
+  const authToken = req.headers['x-genesis-auth-token'] || req.query.token;
+
+  if (!customerId || !authToken) {
+    return res.status(401).json({ error: 'Missing Genesis Credentials' });
+  }
+
+  try {
+    const customer = await prisma.customer.findUnique({
+      where: { genesisId: customerId }
+    });
+
+    if (!customer || customer.genesisAuthToken !== authToken) {
+      return res.status(403).json({ error: 'Invalid Genesis Authentication' });
+    }
+
+    req.customer = customer;
+    next();
+  } catch (error) {
+    res.status(500).json({ error: 'Database error' });
+  }
+};
+
+/* =========================================
+   TASK 4 & 5: Retrieve the list of apps to display on the landing page.
+========================================= */
+app.get('/api/integrations', genesisAuth, async (req, res) => {
+  try {
+    // Only get the apps enabled for this customer
+    const availableApps = await prisma.customerIntegration.findMany({
+      where: { 
+        customerId: req.customer.id,
+        isEnabled: true 
+      },
+      include: {
+        integration: true // Always include name, icon, category from Catalog table
+      }
+    });
+
+    // Format the data returned for Frontend Landing.tsx
+    const formattedData = availableApps.map(item => ({
+      id: item.integration.id,
+      name: item.integration.name,
+      category: item.integration.category,
+      iconUrl: item.integration.iconUrl,
+      badge: item.integration.badge,
+      isConfigured: item.isConfigured
+    }));
+
+    res.json(formattedData);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to load integrations' });
+  }
+});
+
+/* =========================================
+   TASK 6: Save configuration (Slack / Oracle)
+========================================= */
+app.post('/api/credentials/:integrationId', genesisAuth, async (req, res) => {
+  const { integrationId } = req.params;
+  const payload = req.body; 
+  try {
+    // TODO: You should encrypt the payload as a string before saving it.
+    const stringifiedPayload = JSON.stringify(payload);
+
+    const credential = await prisma.connectionCredential.upsert({
+      where: {
+        id: "DUMMY_ID_NEEDS_REAL_LOOKUP_LOGIC" 
+      },
+      create: {
+        customerId: req.customer.id,
+        integrationId: integrationId,
+        configPayload: stringifiedPayload
+      },
+      update: {
+        configPayload: stringifiedPayload
+      }
+    });
+
+    await prisma.customerIntegration.update({
+      where: {
+        customerId_integrationId: {
+          customerId: req.customer.id,
+          integrationId: integrationId
+        }
+      },
+      data: { isConfigured: true }
+    });
+
+    res.json({ success: true, message: 'Credentials saved successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to save credentials' });
   }
 });
 
