@@ -27,3 +27,10 @@ dist-ssr
 # other common files to ignore
 .env
 .mpmrc
+
+/src/generated/prisma
+.windsurf/
+.agents/
+.claude/
+skills-lock.json
+jsconfig.json
