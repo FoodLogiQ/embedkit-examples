@@ -43,7 +43,6 @@ export const AuthProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
   // Boot: if there is a valid BFF session, get a fresh nonce and init plugin.
   const booted = useRef(false);
   useEffect(() => {
-    debugger
     if (booted.current) return;
     booted.current = true;
 

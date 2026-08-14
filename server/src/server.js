@@ -47,7 +47,7 @@ const ALLOW_ORIGINS = new Set(
 const adapter = new PrismaMssql({
   server: "localhost",
   port: 1433,
-  database: "mydb",
+  database: "EmbedKitDB",
   user: "sa",
   password: "M@qwery123!",
   options: {
@@ -64,7 +64,7 @@ app.use((req, res, next) => {
     res.header('Vary', 'Origin');
   }
   res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-genesis-customer-id, x-genesis-auth-token');
   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
   if (req.method === 'OPTIONS') return res.sendStatus(204);
   next();
@@ -244,7 +244,7 @@ app.post('/api/session/nonce', requireAuth, async (req, res) => {
 const genesisAuth = async (req, res, next) => {
   const customerId = req.headers['x-genesis-customer-id'] || req.query.genesisId;
   const authToken = req.headers['x-genesis-auth-token'] || req.query.token;
-
+    
   if (!customerId || !authToken) {
     return res.status(401).json({ error: 'Missing Genesis Credentials' });
   }
@@ -271,7 +271,7 @@ const genesisAuth = async (req, res, next) => {
 app.get('/api/integrations', genesisAuth, async (req, res) => {
   try {
     // Only get the apps enabled for this customer
-    const availableApps = await prisma.customerIntegration.findMany({
+      const availableApps = await prisma.customerIntegration.findMany({
       where: { 
         customerId: req.customer.id,
         isEnabled: true 
