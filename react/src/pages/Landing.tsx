@@ -10,24 +10,35 @@ export const Landing: React.FC<LandingProps> = ({ onSelectIntegration }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
+  const [inputGenesisId, setInputGenesisId] = useState<string>("");
+  const [inputToken, setInputToken] = useState<string>("");
+
   useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const customerId = queryParams.get("genesisId");
+    const authToken = queryParams.get("token");
+
+    if (!customerId || !authToken) {
+      setShowAuthModal(true);
+      setLoading(false);
+      return;
+    }
+
     const fetchIntegrations = async () => {
       try {
-        const queryParams = new URLSearchParams(window.location.search);
-        const customerId = queryParams.get("genesisId");
-        const authToken = queryParams.get("token");
-
-        if (!customerId || !authToken) {
-          throw new Error("Missing Genesis (genesisId or token) on URL.");
-        }
-
-        const response = await fetch(`http://localhost:8080/api/integrations?genesisId=${customerId}&token=${authToken}`, {
-          method: "GET",
-          headers: {
-            "x-genesis-customer-id": customerId,
-            "x-genesis-auth-token": authToken,
-          },
-        });
+        const response = await fetch(
+          `http://localhost:8080/api/integrations?genesisId=${encodeURIComponent(
+            customerId
+          )}&token=${encodeURIComponent(authToken)}`,
+          {
+            method: "GET",
+            headers: {
+              "x-genesis-customer-id": customerId,
+              "x-genesis-auth-token": authToken,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Unable to fetch integrations list from server.");
@@ -45,18 +56,84 @@ export const Landing: React.FC<LandingProps> = ({ onSelectIntegration }) => {
     fetchIntegrations();
   }, []);
 
+  const handleAuthSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputGenesisId.trim() || !inputToken.trim()) return;
+    const newParams = new URLSearchParams(window.location.search);
+    newParams.set("genesisId", inputGenesisId.trim());
+    newParams.set("token", inputToken.trim());
+
+    window.location.search = newParams.toString();
+  };
+
+  if (showAuthModal) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+        <div className="max-w-2xl w-full">
+          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8">
+            <div className="border-b border-gray-200 pb-6 mb-6">
+              <h1 className="text-xl font-bold text-gray-950 mb-1">
+                Genesis Authentication Required
+              </h1>
+            </div>
+            <form onSubmit={handleAuthSubmit} className="space-y-6">
+              <div className="flex flex-col">
+                <label className="block text-[14px] font-semibold text-black mb-1">GENESIS ID</label>
+                <input
+                  type="text"
+                  value={inputGenesisId}
+                  onChange={(e) => setInputGenesisId(e.target.value)}
+                  className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+                  required
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label className="block text-[14px] font-semibold text-black mb-1">AUTH TOKEN</label>
+                <input
+                  type="password"
+                  value={inputToken}
+                  onChange={(e) => setInputToken(e.target.value)}
+                  className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] font-mono leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+                  required
+                />
+              </div>
+
+              <div className="pt-6 flex items-center justify-end space-x-4 border-t border-gray-200 mt-2">
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 text-[14px] font-medium text-white bg-[#4F46E5] rounded-[6px] hover:bg-[#4338CA] focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] transition-colors shadow-sm"
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white py-8 px-8 flex items-center justify-center">
-        <p className="text-gray-500 font-medium">Loading integrations...</p>
+        <p className="text-gray-500 font-medium">Loading...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-white py-8 px-8 flex items-center justify-center">
-        <p className="text-red-500 font-medium">Error: {error}</p>
+      <div className="min-h-screen bg-white py-8 px-8 flex flex-col items-center justify-center">
+        <p className="text-red-500 font-medium mb-4">Error: {error}</p>
+        <button
+          onClick={() => {
+            window.location.search = "";
+          }}
+          className="px-4 py-2 bg-gray-800 text-white text-sm rounded-lg"
+        >
+          Re-enter information
+        </button>
       </div>
     );
   }

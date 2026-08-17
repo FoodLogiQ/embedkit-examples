@@ -238,9 +238,6 @@ app.post('/api/session/nonce', requireAuth, async (req, res) => {
 });
 
 /* For generics */
-/* =========================================
-   TASK 3: Middleware authenticate Genesis Token
-========================================= */
 const genesisAuth = async (req, res, next) => {
   const customerId = req.headers['x-genesis-customer-id'] || req.query.genesisId;
   const authToken = req.headers['x-genesis-auth-token'] || req.query.token;
@@ -265,9 +262,6 @@ const genesisAuth = async (req, res, next) => {
   }
 };
 
-/* =========================================
-   TASK 4 & 5: Retrieve the list of apps to display on the landing page.
-========================================= */
 app.get('/api/integrations', genesisAuth, async (req, res) => {
   try {
     // Only get the apps enabled for this customer
@@ -297,30 +291,30 @@ app.get('/api/integrations', genesisAuth, async (req, res) => {
   }
 });
 
-/* =========================================
-   TASK 6: Save configuration (Slack / Oracle)
-========================================= */
 app.post('/api/credentials/:integrationId', genesisAuth, async (req, res) => {
   const { integrationId } = req.params;
   const payload = req.body; 
   try {
-    // TODO: You should encrypt the payload as a string before saving it.
     const stringifiedPayload = JSON.stringify(payload);
 
-    const credential = await prisma.connectionCredential.upsert({
-      where: {
-        id: "DUMMY_ID_NEEDS_REAL_LOOKUP_LOGIC" 
-      },
-      create: {
-        customerId: req.customer.id,
-        integrationId: integrationId,
-        configPayload: stringifiedPayload
-      },
-      update: {
-        configPayload: stringifiedPayload
-      }
+    let credential = await prisma.connectionCredential.findFirst({
+      where: { customerId: req.customer.id, integrationId: integrationId }
     });
 
+    if (credential) {
+      await prisma.connectionCredential.update({
+        where: { id: credential.id },
+        data: { configPayload: stringifiedPayload }
+      });
+    } else {
+      await prisma.connectionCredential.create({
+        data: {
+          customerId: req.customer.id,
+          integrationId: integrationId,
+          configPayload: stringifiedPayload
+        }
+      });
+    }
     await prisma.customerIntegration.update({
       where: {
         customerId_integrationId: {
@@ -333,7 +327,29 @@ app.post('/api/credentials/:integrationId', genesisAuth, async (req, res) => {
 
     res.json({ success: true, message: 'Credentials saved successfully' });
   } catch (error) {
+    console.error("Failed to save credentials:", error);
     res.status(500).json({ error: 'Failed to save credentials' });
+  }
+});
+
+app.get('/api/credentials/:integrationId', genesisAuth, async (req, res) => {
+  const { integrationId } = req.params;
+  try {
+    const credential = await prisma.connectionCredential.findFirst({
+      where: {
+        customerId: req.customer.id,
+        integrationId: integrationId
+      }
+    });
+
+    if (!credential) {
+      return res.json({ configPayload: null });
+    }
+
+    res.json({ configPayload: credential.configPayload });
+  } catch (error) {
+    console.error("Failed to load credentials:", error);
+    res.status(500).json({ error: 'Failed to load credentials' });
   }
 });
 

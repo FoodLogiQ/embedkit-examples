@@ -1,24 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Integration } from "../data/integrations";
+import { Integration, IntegrationConfigure, NetsuiteConfigure, OracleConfigure, SapConfigure, SlackConfigure } from "../data/integrations";
 
 interface DetailProps {
   integration: Integration;
   onBack: () => void;
 }
 
-// ==========================================
-// 1. COMPONENT: SLACK (STACK) DETAILS FORM
-// ==========================================
-const SlackDetails = ({ formData, handleChange }: { formData: any; handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => (
+const SlackDetails = ({ formData, handleChange }: { formData: SlackConfigure; handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => (
   <>
     <div className="flex flex-col">
       <label className="block text-[14px] font-semibold text-black mb-1">Client ID</label>
       <input
         type="text"
-        name="CLIENT_ID"
-        value={formData.CLIENT_ID || ""}
+        name="clientId"
+        value={formData.clientId || ""}
         onChange={handleChange}
-        placeholder="123456789012.123456789012"
         className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
         required
       />
@@ -28,10 +24,9 @@ const SlackDetails = ({ formData, handleChange }: { formData: any; handleChange:
       <label className="block text-[14px] font-semibold text-black mb-1">Client Secret</label>
       <input
         type="password"
-        name="CLIENT_SECRET"
-        value={formData.CLIENT_SECRET || ""}
+        name="clientSerect"
+        value={formData.clientSerect || ""}
         onChange={handleChange}
-        placeholder="••••••••••••••••••••••••••••"
         className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] font-mono leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
         required
       />
@@ -41,10 +36,9 @@ const SlackDetails = ({ formData, handleChange }: { formData: any; handleChange:
       <label className="block text-[14px] font-semibold text-black mb-1">Access Token</label>
       <input
         type="password"
-        name="ACCESS_TOKEN"
-        value={formData.ACCESS_TOKEN || ""}
+        name="accessToken"
+        value={formData.accessToken || ""}
         onChange={handleChange}
-        placeholder="xoxb-your-bot-access-token"
         className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] font-mono leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
         required
       />
@@ -54,28 +48,24 @@ const SlackDetails = ({ formData, handleChange }: { formData: any; handleChange:
       <label className="block text-[14px] font-semibold text-black mb-1">Channel Name</label>
       <input
         type="text"
-        name="CHANNEL_NAME"
-        value={formData.CHANNEL_NAME || ""}
+        name="channelName"
+        value={formData.channelName || ""}
         onChange={handleChange}
-        placeholder="#general"
         className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
         required
       />
     </div>
   </>
 );
-
-// ==========================================
-// 2. COMPONENT: DEFAULT (ORACLE/BOOMI) DETAILS FORM
-// ==========================================
-const DefaultDetails = ({ formData, handleChange }: { formData: any; handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => (
+  
+const DefaultDetails = ({ formData, handleChange }: { formData: OracleConfigure; handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => (
   <>
     <div className="flex flex-col">
       <label className="block text-[14px] font-semibold text-black mb-1">API_URL</label>
       <input
         type="text"
-        name="API_URL"
-        value={formData.API_URL || ""}
+        name="apiUrl"
+        value={formData.apiUrl || ""}
         onChange={handleChange}
         placeholder="https://api.boomi.com/partner/api/rest/v1"
         className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
@@ -86,8 +76,8 @@ const DefaultDetails = ({ formData, handleChange }: { formData: any; handleChang
       <label className="block text-[14px] font-semibold text-black mb-1">API_ACCOUNT_ID</label>
       <input
         type="text"
-        name="API_ACCOUNT_ID"
-        value={formData.API_ACCOUNT_ID || ""}
+        name="apiAccountId"
+        value={formData.apiAccountId || ""}
         onChange={handleChange}
         placeholder="esharesearchllcdbatrustwe-XXXXXX"
         className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
@@ -98,8 +88,8 @@ const DefaultDetails = ({ formData, handleChange }: { formData: any; handleChang
       <label className="block text-[14px] font-semibold text-black mb-1">API_USERNAME</label>
       <input
         type="text"
-        name="API_USERNAME"
-        value={formData.API_USERNAME || ""}
+        name="apiUsername"
+        value={formData.apiUsername|| ""}
         onChange={handleChange}
         placeholder="BOOMI_TOKEN.user@trustwell.com"
         className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
@@ -110,8 +100,8 @@ const DefaultDetails = ({ formData, handleChange }: { formData: any; handleChang
       <label className="block text-[14px] font-semibold text-black mb-1">API_TOKEN</label>
       <input
         type="password"
-        name="API_TOKEN"
-        value={formData.API_TOKEN || ""}
+        name="apiToken"
+        value={formData.apiToken || ""}
         onChange={handleChange}
         placeholder="••••••••••••••••••••••••••••"
         className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] font-mono leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
@@ -120,52 +110,193 @@ const DefaultDetails = ({ formData, handleChange }: { formData: any; handleChang
     </div>
   </>
 );
+const SapDetails = ({ formData, handleChange }: { formData: SapConfigure; handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => (
+  <>
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">ODATA Service URL</label>
+      <input
+        type="text"
+        name="ODATA_URL"
+        value={formData.ODATA_URL || ""}
+        onChange={handleChange}
+        placeholder="https://myxxxxxx.s4hana.ondemand.com/sap/opu/odata/sap/..."
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+        required
+      />
+    </div>
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Username</label>
+      <input
+        type="text"
+        name="USERNAME"
+        value={formData.USERNAME || ""}
+        onChange={handleChange}
+        placeholder="SAP_USER_API"
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+        required
+      />
+    </div>
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Password / Token</label>
+      <input
+        type="password"
+        name="PASSWORD"
+        value={formData.PASSWORD || ""}
+        onChange={handleChange}
+        placeholder="••••••••••••••••••••••••••••"
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] font-mono leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+        required
+      />
+    </div>
+  </>
+);
+const NetsuiteDetails = ({ formData, handleChange }: { formData: NetsuiteConfigure; handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => (
+  <>
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Account ID</label>
+      <input
+        type="text"
+        name="ACCOUNT_ID"
+        value={formData.ACCOUNT_ID || ""}
+        onChange={handleChange}
+        placeholder="TSTDRV1234567"
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+        required
+      />
+    </div>
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Consumer Key (Token ID)</label>
+      <input
+        type="text"
+        name="CONSUMER_KEY"
+        value={formData.CONSUMER_KEY || ""}
+        onChange={handleChange}
+        placeholder="a1b2c3d4...-consumer-key"
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+        required
+      />
+    </div>
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Consumer Secret</label>
+      <input
+        type="password"
+        name="CONSUMER_SECRET"
+        value={formData.CONSUMER_SECRET || ""}
+        onChange={handleChange}
+        placeholder="••••••••••••••••••••••••••••"
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] font-mono leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+        required
+      />
+    </div>
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Token ID & Secret (TBA)</label>
+      <input
+        type="text"
+        name="TOKEN_ID"
+        value={formData.TOKEN_ID || ""}
+        onChange={handleChange}
+        placeholder="Token ID / Secret Combo"
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+        required
+      />
+    </div>
+  </>
+);
 
-// ==========================================
-// 3. MAIN WRAPPER COMPONENT
-// ==========================================
 export const Detail: React.FC<DetailProps> = ({ integration, onBack }) => {
-  const [formData, setFormData] = useState<any>({});
+  const [formData, setFormData] = useState<IntegrationConfigure>({id: integration.id});
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
 
   const isSlack = integration.id === "slack_integration" || integration.id === "stack_integration";
+  const isSap = integration.id === "sap_s4hana";
+  const isNetsuite = integration.id === "netsuite";
+
+  const queryParams = new URLSearchParams(window.location.search);
+  const genesisId = queryParams.get("genesisId");
+  const token = queryParams.get("token");
 
   useEffect(() => {
-    const fetchFromDummyDB = () => {
+    const fetchConfigFromDB = async () => {
+      if (!genesisId || !token) return;
       setIsLoading(true);
-      setTimeout(() => {
-        const storageKey = `db_config_${integration.id}`;
-        const savedData = localStorage.getItem(storageKey);
 
-        if (savedData) {
-          setFormData(JSON.parse(savedData));
-        } else {
-          if (isSlack) {
-            setFormData({
-              CLIENT_ID: "",
-              CLIENT_SECRET: "",
-              ACCESS_TOKEN: "",
-              CHANNEL_NAME: "",
-            });
-          } else {
-            setFormData({
-              API_URL: "https://api.boomi.com/partner/api/rest/v1",
-              API_ACCOUNT_ID: "esharesearchllcdbatrustwe-XXXXXX",
-              API_USERNAME: "BOOMI_TOKEN.user@trustwell.com",
-              API_TOKEN: "dummy-token-12345678-abcd-efgh",
-            });
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/credentials/${integration.id}?genesisId=${genesisId}&token=${token}`,
+          {
+            method: "GET",
+            headers: {
+              "x-genesis-customer-id": genesisId,
+              "x-genesis-auth-token": token,
+            },
           }
+        );
+
+            console.log("Response:", response);
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.configPayload) {
+            setFormData(JSON.parse(data.configPayload));
+          } else {
+            setDefaultInitialValues();
+          }
+        } else {
+          setDefaultInitialValues();
         }
+      } catch (error) {
+        console.error("Failed to load credentials", error);
+        setDefaultInitialValues();
+      } finally {
         setIsLoading(false);
-      }, 400);
+      }
     };
 
-    fetchFromDummyDB();
-  }, [integration.id, isSlack]);
+    const setDefaultInitialValues = () => {
+      if (isSlack) {
+        setFormData({
+          id: integration.id,
+          clientId: "",
+          clientSerect: "",
+          accessToken: "",
+          channelName: "",
+        } as SlackConfigure);
+      }
+      else if (isNetsuite) {
+        setFormData({
+          id: integration.id,
+          ACCOUNT_ID: "",
+          CONSUMER_KEY: "",
+          CONSUMER_SECRET: "",
+          TOKEN_ID: ""
+        } as NetsuiteConfigure);
+      }
+      else if (isSap) {
+        setFormData({
+          id: integration.id,
+          ODATA_URL: "",
+          USERNAME: "",
+          PASSWORD: "" 
+        } as SapConfigure);
+      }
+      else {
+        setFormData({
+          id: integration.id,
+          apiUrl: "",
+          apiAccountId: "",
+          apiUsername: "",
+          apiToken: "",
+        } as OracleConfigure);
+      }
+    };
+
+    fetchConfigFromDB();
+  }, [integration.id, isSlack, genesisId, token]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    console.log(e.target)
     setFormData((prev: any) => ({
       ...prev,
       [name]: value,
@@ -173,16 +304,34 @@ export const Detail: React.FC<DetailProps> = ({ integration, onBack }) => {
     setSaveStatus(null);
   };
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaveStatus("saving...");
 
-    setTimeout(() => {
-      const storageKey = `db_config_${integration.id}`;
-      localStorage.setItem(storageKey, JSON.stringify(formData));
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/credentials/${integration.id}?genesisId=${genesisId}&token=${token}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-genesis-customer-id": genesisId || "",
+            "x-genesis-auth-token": token || "",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+      
+      if (!response.ok) {
+        throw new Error("Failed to save credentials");
+      }
+
       setSaveStatus("saved!");
       setTimeout(() => setSaveStatus(null), 3000);
-    }, 600);
+    } catch (error) {
+      console.error(error);
+      setSaveStatus("error");
+    }
   };
 
   return (
@@ -203,7 +352,7 @@ export const Detail: React.FC<DetailProps> = ({ integration, onBack }) => {
               className="w-12 h-12 object-contain"
             />
             <div>
-              <h1 className="text-xl font-bold text-gray-900">
+              <h1 className="text-xl font-bold text-gray-950">
                 {integration.name} Configuration
               </h1>
               <p className="text-sm text-gray-600">
@@ -222,14 +371,22 @@ export const Detail: React.FC<DetailProps> = ({ integration, onBack }) => {
             <form onSubmit={handleSave} className="space-y-6">
               {isSlack ? (
                 <SlackDetails formData={formData} handleChange={handleChange} />
+              ) : isSap ? (
+                <SapDetails formData={formData} handleChange={handleChange} />
+              ) : isNetsuite ? (
+                <NetsuiteDetails formData={formData} handleChange={handleChange} />
               ) : (
                 <DefaultDetails formData={formData} handleChange={handleChange} />
               )}
-
               <div className="pt-6 flex items-center justify-end space-x-4 border-t border-gray-200 mt-2">
                 {saveStatus === "saved!" && (
                   <span className="text-sm font-medium text-green-700 bg-green-100 px-3 py-1 rounded-full">
                     ✓ Saved successfully!
+                  </span>
+                )}
+                {saveStatus === "error" && (
+                  <span className="text-sm font-medium text-red-700 bg-red-100 px-3 py-1 rounded-full">
+                    ✕ Failed to save!
                   </span>
                 )}
 
