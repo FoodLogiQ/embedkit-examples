@@ -33,9 +33,20 @@ export interface SapConfigure extends IntegrationConfigure  {
   clientNumber?: string; 	
 }
 
-export interface NetsuiteConfigure extends IntegrationConfigure  {
-  accountId?: string;
-  consumerKey?: string; 
+export interface NetsuiteConfigure extends IntegrationConfigure {
+  url?: string;
+  user?: string;
+  password?: string;
+  accountNumber?: string;
+  useBoomiRecord?: boolean;
+  consumerKey?: string;
   consumerSecret?: string;
+  consumerSecretDeprecated?: string;
   tokenId?: string;
+  tokenSecret?: string;
+  tokenSecretDeprecated?: string;
+  applicationId?: string;
+  version?: string;
+  numberofRetries?: string;
+  maxConcurrentConnections?: string;
 }

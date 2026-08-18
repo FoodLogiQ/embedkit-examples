@@ -160,32 +160,75 @@ const SapDetails = ({ formData, handleChange }: { formData: SapConfigure; handle
     </div>
   </>
 );
-const NetsuiteDetails = ({ formData, handleChange }: { formData: NetsuiteConfigure; handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => (
+const NetsuiteDetails = ({ formData, handleChange }: { formData: NetsuiteConfigure; handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void }) => (
   <>
     <div className="flex flex-col">
-      <label className="block text-[14px] font-semibold text-black mb-1">Account ID</label>
+      <label className="block text-[14px] font-semibold text-black mb-1">URL</label>
       <input
         type="text"
-        name="accountId"
-        value={formData.accountId || ""}
+        name="url"
+        value={formData.url || "https://webservices.netsuite.com/services/NetSuitePort_2025_2"}
         onChange={handleChange}
-        placeholder="TSTDRV1234567"
         className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
-        required
       />
     </div>
+
     <div className="flex flex-col">
-      <label className="block text-[14px] font-semibold text-black mb-1">Consumer Key (Token ID)</label>
+      <label className="block text-[14px] font-semibold text-black mb-1">User</label>
+      <input
+        type="text"
+        name="user"
+        value={formData.user || ""}
+        onChange={handleChange}
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+      />
+    </div>
+
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Password</label>
+      <input
+        type="password"
+        name="password"
+        value={formData.password || ""}
+        onChange={handleChange}
+        placeholder="••••••••••••"
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] font-mono leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+      />
+    </div>
+
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Account Number</label>
+      <input
+        type="text"
+        name="accountNumber"
+        value={formData.accountNumber || ""}
+        onChange={handleChange}
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+      />
+    </div>
+
+    <div className="flex items-center space-x-2 my-2">
+      <input
+        type="checkbox"
+        name="useBoomiRecord"
+        checked={formData.useBoomiRecord || false}
+        onChange={(e: any) => handleChange({ target: { name: 'useBoomiRecord', value: e.target.checked } } as any)}
+        className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+      />
+      <label className="text-[14px] font-semibold text-black">Use Boomi Integration Record</label>
+    </div>
+
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Consumer Key</label>
       <input
         type="text"
         name="consumerKey"
         value={formData.consumerKey || ""}
         onChange={handleChange}
-        placeholder="a1b2c3d4...-consumer-key"
         className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
-        required
       />
     </div>
+
     <div className="flex flex-col">
       <label className="block text-[14px] font-semibold text-black mb-1">Consumer Secret</label>
       <input
@@ -193,21 +236,101 @@ const NetsuiteDetails = ({ formData, handleChange }: { formData: NetsuiteConfigu
         name="consumerSecret"
         value={formData.consumerSecret || ""}
         onChange={handleChange}
-        placeholder="••••••••••••••••••••••••••••"
         className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] font-mono leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
-        required
       />
     </div>
+
     <div className="flex flex-col">
-      <label className="block text-[14px] font-semibold text-black mb-1">Token ID & Secret (TBA)</label>
+      <label className="block text-[14px] font-semibold text-black mb-1">Consumer Secret (Deprecated)</label>
+      <input
+        type="password"
+        name="consumerSecretDeprecated"
+        value={formData.consumerSecretDeprecated || ""}
+        onChange={handleChange}
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] font-mono leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+      />
+    </div>
+
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Token Id</label>
       <input
         type="text"
         name="tokenId"
         value={formData.tokenId || ""}
         onChange={handleChange}
-        placeholder="Token ID / Secret Combo"
         className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
-        required
+      />
+    </div>
+
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Token Secret</label>
+      <input
+        type="password"
+        name="tokenSecret"
+        value={formData.tokenSecret || ""}
+        onChange={handleChange}
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] font-mono leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+      />
+    </div>
+
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Token Secret (Deprecated)</label>
+      <input
+        type="password"
+        name="tokenSecretDeprecated"
+        value={formData.tokenSecretDeprecated || ""}
+        onChange={handleChange}
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] font-mono leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+      />
+    </div>
+
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Application Id</label>
+      <input
+        type="text"
+        name="applicationId"
+        value={formData.applicationId || ""}
+        onChange={handleChange}
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+      />
+    </div>
+
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Version</label>
+      <select
+        name="version"
+        value={formData.version || "Version 2025.2"}
+        onChange={handleChange}
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+      >
+        <option value="Version 2025.2">Version 2025.2</option>
+        <option value="Version 2025.1">Version 2025.1</option>
+        <option value="Version 2024.2">Version 2024.2</option>
+      </select>
+    </div>
+
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Number of Retries</label>
+      <select
+        name="numberofRetries"
+        value={formData.numberofRetries || "5"}
+        onChange={handleChange}
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+      >
+        <option value="3">3</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+      </select>
+    </div>
+
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Maximum Number of Concurrent Connections</label>
+      <input
+        type="number"
+        name="maxConcurrentConnections"
+        value={formData.maxConcurrentConnections || "1"}
+        onChange={handleChange}
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
       />
     </div>
   </>
@@ -305,9 +428,13 @@ export const Detail: React.FC<DetailProps> = ({ integration, onBack }) => {
     fetchConfigFromDB();
   }, [integration.id, isSlack, genesisId, token]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    console.log(e.target)
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const target = e.target as any;
+    const name = target.name;
+    const value = target.type === "checkbox" ? target.checked : target.value;
+
+    console.log("Field changed:", name, value);
+
     setFormData((prev: any) => ({
       ...prev,
       [name]: value,
