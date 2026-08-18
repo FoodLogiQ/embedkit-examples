@@ -57,7 +57,6 @@ const SlackDetails = ({ formData, handleChange }: { formData: SlackConfigure; ha
     </div>
   </>
 );
-  
 const DefaultDetails = ({ formData, handleChange }: { formData: OracleConfigure; handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => (
   <>
     <div className="flex flex-col">
