@@ -1,8 +1,3 @@
-/**
- * Simple Express-based API server for EmbedKit demo
- * - single-tenant (config via env)
- * - no DB (hardcoded user)
- */
 import 'dotenv/config';
 import express from 'express';
 import helmet from 'helmet';
@@ -11,7 +6,9 @@ import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 import fetch from 'node-fetch';
-
+import 'dotenv/config';
+import { PrismaMssql } from "@prisma/adapter-mssql";
+import { PrismaClient } from '@prisma/client';
 /* ------------ env ------------ */
 const {
   PORT = 8080,
@@ -29,9 +26,7 @@ const {
 } = process.env;
 
 /* ------------ due to no db ------------ */
-let iEmail;
-
-
+let iEmail
 /* ------------ app ------------ */
 const app = express();
 app.set('trust proxy', 1);
@@ -49,6 +44,19 @@ const ALLOW_ORIGINS = new Set(
     .filter(Boolean)
 );
 
+const adapter = new PrismaMssql({
+  server: "localhost",
+  port: 1433,
+  database: "EmbedKitDB",
+  user: "sa",
+  password: "M@qwery123!",
+  options: {
+    encrypt: true,
+    trustServerCertificate: true,
+  },
+});
+const prisma = new PrismaClient({ adapter });
+
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (origin && ALLOW_ORIGINS.has(origin)) {
@@ -56,7 +64,7 @@ app.use((req, res, next) => {
     res.header('Vary', 'Origin');
   }
   res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-genesis-customer-id, x-genesis-auth-token');
   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
   if (req.method === 'OPTIONS') return res.sendStatus(204);
   next();
@@ -226,6 +234,122 @@ app.post('/api/session/nonce', requireAuth, async (req, res) => {
     return res.json({ serverBase: EMBEDKIT_SERVER_BASE, nonce, ttlSec, tenantId: API_ACCOUNT_ID  });
   } catch {
     return res.status(502).json({ error: 'embedkit_server_unreachable' });
+  }
+});
+
+/* For generics */
+const genesisAuth = async (req, res, next) => {
+  const customerId = req.headers['x-genesis-customer-id'] || req.query.genesisId;
+  const authToken = req.headers['x-genesis-auth-token'] || req.query.token;
+    
+  if (!customerId || !authToken) {
+    return res.status(401).json({ error: 'Missing Genesis Credentials' });
+  }
+
+  try {
+    const customer = await prisma.customer.findUnique({
+      where: { genesisId: customerId }
+    });
+
+    if (!customer || customer.genesisAuthToken !== authToken) {
+      return res.status(403).json({ error: 'Invalid Genesis Authentication' });
+    }
+
+    req.customer = customer;
+    next();
+  } catch (error) {
+    res.status(500).json({ error: 'Database error' });
+  }
+};
+
+app.get('/api/integrations', genesisAuth, async (req, res) => {
+  try {
+    // Only get the apps enabled for this customer
+      const availableApps = await prisma.customerIntegration.findMany({
+      where: { 
+        customerId: req.customer.id,
+        isEnabled: true 
+      },
+      include: {
+        integration: true // Always include name, icon, category from Catalog table
+      }
+    });
+
+    // Format the data returned for Frontend Landing.tsx
+    const formattedData = availableApps.map(item => ({
+      id: item.integration.id,
+      name: item.integration.name,
+      category: item.integration.category,
+      iconUrl: item.integration.iconUrl,
+      badge: item.integration.badge,
+      isConfigured: item.isConfigured
+    }));
+
+    res.json(formattedData);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to load integrations' });
+  }
+});
+
+app.post('/api/credentials/:integrationId', genesisAuth, async (req, res) => {
+  const { integrationId } = req.params;
+  const payload = req.body; 
+  try {
+    const stringifiedPayload = JSON.stringify(payload);
+
+    let credential = await prisma.connectionCredential.findFirst({
+      where: { customerId: req.customer.id, integrationId: integrationId }
+    });
+
+    if (credential) {
+      await prisma.connectionCredential.update({
+        where: { id: credential.id },
+        data: { configPayload: stringifiedPayload }
+      });
+    } else {
+      await prisma.connectionCredential.create({
+        data: {
+          customerId: req.customer.id,
+          integrationId: integrationId,
+          configPayload: stringifiedPayload
+        }
+      });
+    }
+    await prisma.customerIntegration.update({
+      where: {
+        customerId_integrationId: {
+          customerId: req.customer.id,
+          integrationId: integrationId
+        }
+      },
+      data: { isConfigured: true }
+    });
+
+    res.json({ success: true, message: 'Credentials saved successfully' });
+  } catch (error) {
+    console.error("Failed to save credentials:", error);
+    res.status(500).json({ error: 'Failed to save credentials' });
+  }
+});
+
+app.get('/api/credentials/:integrationId', genesisAuth, async (req, res) => {
+  const { integrationId } = req.params;
+  try {
+    const credential = await prisma.connectionCredential.findFirst({
+      where: {
+        customerId: req.customer.id,
+        integrationId: integrationId
+      }
+    });
+
+    if (!credential) {
+      return res.json({ configPayload: null });
+    }
+
+    res.json({ configPayload: credential.configPayload });
+  } catch (error) {
+    console.error("Failed to load credentials:", error);
+    res.status(500).json({ error: 'Failed to load credentials' });
   }
 });
 
