@@ -7,6 +7,7 @@ export interface Integration {
   isFeatured?: boolean;
   isConfigured?: boolean;
 }
+
 export interface IntegrationConfigure {
   id: string;
 }
@@ -17,6 +18,7 @@ export interface OracleConfigure extends IntegrationConfigure  {
   apiUsername?: string;
   apiToken?: string;
 }
+
 export interface SlackConfigure extends IntegrationConfigure  {
   clientId?: string;
   clientSerect?: string; 
@@ -25,14 +27,15 @@ export interface SlackConfigure extends IntegrationConfigure  {
 }
 
 export interface SapConfigure extends IntegrationConfigure  {
-  ODATA_URL?: string;
-  USERNAME?: string; 
-  PASSWORD?: string;
-}
-export interface NetsuiteConfigure extends IntegrationConfigure  {
-  ACCOUNT_ID?: string;
-  CONSUMER_KEY?: string; 
-  CONSUMER_SECRET?: string;
-  TOKEN_ID?: string;
+  odataUrl?: string;
+  userName?: string; 
+  password?: string;
+  clientNumber?: string; 	
 }
 
+export interface NetsuiteConfigure extends IntegrationConfigure  {
+  accountId?: string;
+  consumerKey?: string; 
+  consumerSecret?: string;
+  tokenId?: string;
+}

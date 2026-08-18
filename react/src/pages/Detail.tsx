@@ -115,8 +115,8 @@ const SapDetails = ({ formData, handleChange }: { formData: SapConfigure; handle
       <label className="block text-[14px] font-semibold text-black mb-1">ODATA Service URL</label>
       <input
         type="text"
-        name="ODATA_URL"
-        value={formData.ODATA_URL || ""}
+        name="odataUrl"
+        value={formData.odataUrl || ""}
         onChange={handleChange}
         placeholder="https://myxxxxxx.s4hana.ondemand.com/sap/opu/odata/sap/..."
         className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
@@ -127,8 +127,8 @@ const SapDetails = ({ formData, handleChange }: { formData: SapConfigure; handle
       <label className="block text-[14px] font-semibold text-black mb-1">Username</label>
       <input
         type="text"
-        name="USERNAME"
-        value={formData.USERNAME || ""}
+        name="userName"
+        value={formData.userName || ""}
         onChange={handleChange}
         placeholder="SAP_USER_API"
         className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
@@ -139,11 +139,22 @@ const SapDetails = ({ formData, handleChange }: { formData: SapConfigure; handle
       <label className="block text-[14px] font-semibold text-black mb-1">Password / Token</label>
       <input
         type="password"
-        name="PASSWORD"
-        value={formData.PASSWORD || ""}
+        name="password"
+        value={formData.password || ""}
         onChange={handleChange}
         placeholder="••••••••••••••••••••••••••••"
         className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] font-mono leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+        required
+      />
+    </div>
+    <div className="flex flex-col">
+      <label className="block text-[14px] font-semibold text-black mb-1">Client Number</label>
+      <input
+        type="text"
+        name="clientNumber"
+        value={formData.clientNumber || ""}
+        onChange={handleChange}
+        className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
         required
       />
     </div>
@@ -155,8 +166,8 @@ const NetsuiteDetails = ({ formData, handleChange }: { formData: NetsuiteConfigu
       <label className="block text-[14px] font-semibold text-black mb-1">Account ID</label>
       <input
         type="text"
-        name="ACCOUNT_ID"
-        value={formData.ACCOUNT_ID || ""}
+        name="accountId"
+        value={formData.accountId || ""}
         onChange={handleChange}
         placeholder="TSTDRV1234567"
         className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
@@ -167,8 +178,8 @@ const NetsuiteDetails = ({ formData, handleChange }: { formData: NetsuiteConfigu
       <label className="block text-[14px] font-semibold text-black mb-1">Consumer Key (Token ID)</label>
       <input
         type="text"
-        name="CONSUMER_KEY"
-        value={formData.CONSUMER_KEY || ""}
+        name="consumerKey"
+        value={formData.consumerKey || ""}
         onChange={handleChange}
         placeholder="a1b2c3d4...-consumer-key"
         className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
@@ -179,8 +190,8 @@ const NetsuiteDetails = ({ formData, handleChange }: { formData: NetsuiteConfigu
       <label className="block text-[14px] font-semibold text-black mb-1">Consumer Secret</label>
       <input
         type="password"
-        name="CONSUMER_SECRET"
-        value={formData.CONSUMER_SECRET || ""}
+        name="consumerSecret"
+        value={formData.consumerSecret || ""}
         onChange={handleChange}
         placeholder="••••••••••••••••••••••••••••"
         className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] font-mono leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
@@ -191,8 +202,8 @@ const NetsuiteDetails = ({ formData, handleChange }: { formData: NetsuiteConfigu
       <label className="block text-[14px] font-semibold text-black mb-1">Token ID & Secret (TBA)</label>
       <input
         type="text"
-        name="TOKEN_ID"
-        value={formData.TOKEN_ID || ""}
+        name="tokenId"
+        value={formData.tokenId || ""}
         onChange={handleChange}
         placeholder="Token ID / Secret Combo"
         className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
@@ -265,18 +276,19 @@ export const Detail: React.FC<DetailProps> = ({ integration, onBack }) => {
       else if (isNetsuite) {
         setFormData({
           id: integration.id,
-          ACCOUNT_ID: "",
-          CONSUMER_KEY: "",
-          CONSUMER_SECRET: "",
-          TOKEN_ID: ""
+          accountId: "",
+          consumerKey: "",
+          consumerSecret: "",
+          tokenId: ""
         } as NetsuiteConfigure);
       }
       else if (isSap) {
         setFormData({
           id: integration.id,
-          ODATA_URL: "",
-          USERNAME: "",
-          PASSWORD: "" 
+          odataUrl: "",
+          userName: "",
+          password: "",
+          clientNumber: "" 
         } as SapConfigure);
       }
       else {
