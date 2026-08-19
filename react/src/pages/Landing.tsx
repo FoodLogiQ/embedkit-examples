@@ -24,11 +24,12 @@ export const Landing: React.FC<LandingProps> = ({ onSelectIntegration }) => {
       setLoading(false);
       return;
     }
-
+    
+    const base = import.meta.env.VITE_SERVER_URL as string;
     const fetchIntegrations = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/integrations?genesisId=${encodeURIComponent(
+          `${base}/api/integrations?genesisId=${encodeURIComponent(
             customerId
           )}&token=${encodeURIComponent(authToken)}`,
           {

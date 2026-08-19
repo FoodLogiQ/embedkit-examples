@@ -5,7 +5,7 @@ interface DetailProps {
   integration: Integration;
   onBack: () => void;
 }
-
+const base = import.meta.env.VITE_SERVER_URL as string;
 const SlackDetails = ({ formData, handleChange }: { formData: SlackConfigure; handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void }) => (
   <>
     <div className="flex flex-col">
@@ -356,7 +356,7 @@ export const Detail: React.FC<DetailProps> = ({ integration, onBack }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:8080/api/credentials/${integration.id}?genesisId=${genesisId}&token=${token}`,
+          `${base}/api/credentials/${integration.id}?genesisId=${genesisId}&token=${token}`,
           {
             method: "GET",
             headers: {
@@ -448,7 +448,7 @@ export const Detail: React.FC<DetailProps> = ({ integration, onBack }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/credentials/${integration.id}?genesisId=${genesisId}&token=${token}`,
+        `${base}/api/credentials/${integration.id}?genesisId=${genesisId}&token=${token}`,
         {
           method: "POST",
           headers: {
