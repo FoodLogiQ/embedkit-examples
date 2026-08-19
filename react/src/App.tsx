@@ -72,9 +72,10 @@ const AppShell: React.FC = () => {
 // }
 
 const App: React.FC = () => {
-  const { session } = useAuth()
-  const authed = Boolean(session)
-  return authed ? <AppShell /> : <Login />
+  // const { session } = useAuth()
+  // const authed = Boolean(session)
+  // return authed ? <AppShell /> : <Login />
+  return <AppShell />
 }
 
 export default App
