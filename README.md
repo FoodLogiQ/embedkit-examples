@@ -141,6 +141,19 @@ API_TOKEN="your-api-token"
 API_AUTH_USER="your-child-account-id"
 API_ACCOUNT_GROUP="your-account-group"
 
+# SQL Server (required). Local Docker/dev typically needs trustServerCertificate.
+# App Runner injects these from Secrets Manager boomi/<env>/db (Genesis RDS, database Boomi).
+DB_SERVER=localhost
+DB_PORT=1433
+DB_NAME=EmbedKitDB
+DB_USER=sa
+DB_PASSWORD=replace_with_local_sql_password
+DB_ENCRYPT=true
+DB_TRUST_SERVER_CERTIFICATE=true
+
+# Prisma CLI only (migrate/generate). Runtime uses DB_* above, not DATABASE_URL.
+# DATABASE_URL="sqlserver://localhost:1433;database=EmbedKitDB;user=sa;password=replace_with_local_sql_password;encrypt=true;trustServerCertificate=true"
+
 # AI features (optional)
 OPENAI_API_KEY="your-openai-key"
 OPENAI_API_MODEL="gpt-4o-2024-08-06"

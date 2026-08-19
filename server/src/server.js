@@ -22,10 +22,20 @@ const {
   API_USERNAME,
   API_TOKEN,
   API_AUTH_USER,
-  API_ACCOUNT_GROUP
+  API_ACCOUNT_GROUP,
+  DB_SERVER,
+  DB_PORT = '1433',
+  DB_NAME,
+  DB_USER,
+  DB_PASSWORD,
+  DB_ENCRYPT = 'true',
+  DB_TRUST_SERVER_CERTIFICATE = 'false',
 } = process.env;
 
-/* ------------ due to no db ------------ */
+if (!DB_SERVER || !DB_NAME || !DB_USER || !DB_PASSWORD) {
+  throw new Error('Missing DB_SERVER, DB_NAME, DB_USER, or DB_PASSWORD');
+}
+
 let iEmail
 /* ------------ app ------------ */
 const app = express();
@@ -45,14 +55,14 @@ const ALLOW_ORIGINS = new Set(
 );
 
 const adapter = new PrismaMssql({
-  server: process.env.DB_SERVER,     
-  port: parseInt(process.env.DB_PORT),   
-  database: process.env.DB_NAME,     
-  user: process.env.DB_USER,              
-  password: process.env.DB_PASSWORD, 
+  server: DB_SERVER,
+  port: Number(DB_PORT),
+  database: DB_NAME,
+  user: DB_USER,
+  password: DB_PASSWORD,
   options: {
-    encrypt: true,                                
-    trustServerCertificate: true,
+    encrypt: DB_ENCRYPT !== 'false',
+    trustServerCertificate: DB_TRUST_SERVER_CERTIFICATE === 'true',
   },
 });
 const prisma = new PrismaClient({ adapter });
