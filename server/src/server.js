@@ -45,13 +45,13 @@ const ALLOW_ORIGINS = new Set(
 );
 
 const adapter = new PrismaMssql({
-  server: "localhost",
-  port: 1433,
-  database: "EmbedKitDB",
-  user: "sa",
-  password: "M@qwery123!",
+  server: process.env.DB_SERVER,     
+  port: parseInt(process.env.DB_PORT),   
+  database: process.env.DB_NAME,     
+  user: process.env.DB_USER,              
+  password: process.env.DB_PASSWORD, 
   options: {
-    encrypt: true,
+    encrypt: true,                                
     trustServerCertificate: true,
   },
 });
