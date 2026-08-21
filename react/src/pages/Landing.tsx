@@ -13,21 +13,64 @@ export const Landing: React.FC<LandingProps> = ({ onSelectIntegration }) => {
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
   const [inputGenesisId, setInputGenesisId] = useState<string>("");
   const [inputToken, setInputToken] = useState<string>("");
+  const [inputApiToken, setInputApiToken] = useState<string>("");
 
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const customerId = queryParams.get("genesisId");
     const authToken = queryParams.get("token");
+    const apiToken = queryParams.get("api_token");
 
-    if (!customerId || !authToken) {
+    if (!customerId || !authToken || !apiToken) {
       setShowAuthModal(true);
       setLoading(false);
       return;
     }
     
     const base = import.meta.env.VITE_SERVER_URL as string;
-    const fetchIntegrations = async () => {
+    
+   const validateAndFetch = async () => {
       try {
+        const graphqlQuery = {
+          query: `
+            query($input: FoodSearchInput!) {
+              foods {
+                search(input: $input) {
+                  foodSearchResults {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+          `,
+          variables: {
+            input: {
+              searchText: "",
+              foodTypes: ["Recipe"],
+              itemSourceFilter: "Customer",
+              versionFilter: "Latest",
+              documentStatusFilter: "All",
+              archiveFilter: "Unarchived",
+              first: 1,
+              after: 0
+            }
+          }
+        };
+
+        const validateResponse = await fetch("https://api-dev.trustwell.com/genesis", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-KEY": apiToken
+          },
+          body: JSON.stringify(graphqlQuery)
+        });
+
+        if (!validateResponse.ok) {
+          throw new Error("Validation failed: Invalid API Token.");
+        }
+        
         const response = await fetch(
           `${base}/api/integrations?genesisId=${encodeURIComponent(
             customerId
@@ -48,21 +91,22 @@ export const Landing: React.FC<LandingProps> = ({ onSelectIntegration }) => {
         const data = await response.json();
         setIntegrations(data);
       } catch (err: any) {
-        setError(err.message || "An error occurred");
+        setError(err.message || "An error occurred during authentication.");
       } finally {
         setLoading(false);
       }
     };
-
-    fetchIntegrations();
+    validateAndFetch();
   }, []);
 
   const handleAuthSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputGenesisId.trim() || !inputToken.trim()) return;
+    if (!inputGenesisId.trim() || !inputToken.trim() || !inputApiToken.trim()) return;
+    
     const newParams = new URLSearchParams(window.location.search);
     newParams.set("genesisId", inputGenesisId.trim());
     newParams.set("token", inputToken.trim());
+    newParams.set("api_token", inputApiToken.trim());
 
     window.location.search = newParams.toString();
   };
@@ -95,6 +139,16 @@ export const Landing: React.FC<LandingProps> = ({ onSelectIntegration }) => {
                   type="password"
                   value={inputToken}
                   onChange={(e) => setInputToken(e.target.value)}
+                  className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] font-mono leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
+                  required
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="block text-[14px] font-semibold text-black mb-1">API TOKEN</label>
+                <input
+                  type="password"
+                  value={inputApiToken}
+                  onChange={(e) => setInputApiToken(e.target.value)}
                   className="box-border w-full h-[40px] px-[12px] bg-white border border-gray-400 rounded-[6px] text-gray-900 text-[14px] font-mono leading-[1.2] placeholder-gray-500 hover:border-gray-600 focus:outline focus:outline-[3px] focus:outline-[#0071EC] focus:outline-offset-[2px] focus:border-[#0071EC] focus:ring-0 transition-colors"
                   required
                 />
